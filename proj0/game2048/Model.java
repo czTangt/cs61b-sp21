@@ -138,6 +138,14 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for (int col = 0; col < b.size(); col += 1) {
+            for (int row = 0; row < b.size(); row += 1) {
+                Tile tile = b.tile(row, col);
+                if (tile == null) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -148,6 +156,14 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for (int col = 0; col < b.size(); col += 1) {
+            for (int row = 0; row < b.size(); row += 1) {
+                Tile tile = b.tile(row, col);
+                if (tile != null && tile.value() == MAX_PIECE) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +175,34 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        for (int col = 0; col < b.size(); col += 1) {
+            for (int row = 0; row < b.size(); row += 1) {
+                Tile tile = b.tile(row, col);
+                if (tile == null) {
+                    return true;
+                } else {
+                    // It’s played on a 4×4 grid of squares, so I can use the following code
+                    // But it goes wrong in other cases, such as 5 x 5
+                    if (row == b.size() - 1) {
+                        if (tile.value() == b.tile(row - 1, col).value()) {
+                            return true;
+                        }
+                    } else if (row == 0) {
+                        if (tile.value() == b.tile(row + 1, col).value()) {
+                            return true;
+                        }
+                    } else if (col == b.size() - 1) {
+                        if (tile.value() == b.tile(row, col - 1).value()) {
+                            return true;
+                        }
+                    } else if (col == 0) {
+                        if (tile.value() == b.tile(row, col + 1).value()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
