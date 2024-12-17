@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author cztang
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -114,11 +114,61 @@ public class Model extends Observable {
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
 
+        if (side == Side.EAST) {
+            board.setViewingPerspective(Side.EAST);
+        } else if (side == Side.SOUTH) {
+            board.setViewingPerspective(Side.SOUTH);
+        } else if (side == Side.WEST) {
+            board.setViewingPerspective(Side.WEST);
+        }
+
+        for (int col = 0; col < board.size(); col += 1) { // The following columns are the same
+            // record where the merge occurred in this column
+            boolean[] merged = new boolean[board.size()];
+            // judging from the second line downward, so that the findTargetRow is generic
+            for (int row = board.size() - 2; row >= 0; row -= 1) {
+                Tile currentTile = board.tile(col, row);
+                if (currentTile == null) continue;
+
+                int targetRow = findTargetRow(col, row, merged);
+                if (targetRow != row) { // can be moved to or merged
+                    Tile targetTile = board.tile(col, targetRow);
+                    board.move(col, targetRow, currentTile);
+                    if (targetTile != null) { // can be merged
+                        merged[targetRow] = true; // mark this location as merged
+                        score += currentTile.value() * 2; // update score
+                    }
+                    changed = true;
+                }
+            }
+        }
+
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
+    }
+
+    // Find the target row of the current Tile
+    private int findTargetRow(int col, int startRow, boolean[] merged) {
+        int targetRow = startRow;
+        for (int row = startRow + 1; row < board.size(); row += 1) {
+            Tile aboveTile = board.tile(col, row);
+            // the farthest position that can be moved to
+            if (aboveTile == null) {
+                targetRow = row;
+            } // locations that can be merged
+            else if (aboveTile.value() == board.tile(col, startRow).value() && !merged[row]) {
+                targetRow = row;
+                break;
+            } // inability to move to
+            else {
+                break;
+            }
+        }
+        return targetRow;
     }
 
     /** Checks if the game is over and sets the gameOver variable
@@ -178,7 +228,8 @@ public class Model extends Observable {
         for (int col = 0; col < b.size(); col += 1) {
             for (int row = 0; row < b.size(); row += 1) {
                 Tile tile = b.tile(row, col);
-                if (tile == null) {
+                // This cannot use tile == null, otherwise the value() below may be null
+                if (emptySpaceExists(b)) {
                     return true;
                 } else {
                     // It’s played on a 4×4 grid of squares, so I can use the following code
