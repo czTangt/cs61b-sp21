@@ -5,14 +5,14 @@ public class ArrayDeque<T> implements Deque<T> {
     private T[] items;
     private int size;
     private final int INIT_CAPACITY = 8; // init size
-    private final int MAX_CAPACITY = INIT_CAPACITY * 2;
+    private final int MAX_CAPACITY = 16; // max size
     // nextFirst points to the position before the first item.
     private int nextFirst;
     // nextLast points to the position after the last item.
     private int nextLast;
 
     ArrayDeque() {
-        items = (T[]) new Object[INIT_CAPACITY];
+        items = createArray(INIT_CAPACITY);
         size = 0;
         nextFirst = INIT_CAPACITY - 1;
         nextLast = 0;
@@ -25,13 +25,6 @@ public class ArrayDeque<T> implements Deque<T> {
 
     private int prevIndex(int index) {
         return (index - 1 + items.length) % items.length;
-    }
-
-    // check if it is circular; if it is, return true
-    private boolean isCircular() {
-        int first = nextIndex(nextFirst);
-        int last = prevIndex(nextLast);
-        return first > last;
     }
 
     // check if it needs expand.
@@ -48,15 +41,20 @@ public class ArrayDeque<T> implements Deque<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private T[] createArray(int capacity) {
+        return (T[]) new Object[capacity];
+    }
     private void resize(int newCapacity) {
-        T[] newItems = (T[]) new Object[newCapacity];
+        T[] newItems = createArray(newCapacity);
         int first = nextIndex(nextFirst);
-        // if it is a circular
-        if (isCircular()) {
-            System.arraycopy(items, first, newItems, 0, items.length - first);
-            System.arraycopy(items, 0, newItems, items.length - first, nextLast);
-        } else {
+        // if it not is a circular
+        if (first <= nextLast) {
             System.arraycopy(items, first, newItems, 0, size);
+        } else {
+            int firstPart = items.length - first;
+            System.arraycopy(items, first, newItems, 0, firstPart);
+            System.arraycopy(items, 0, newItems, firstPart, nextLast);
         }
         items = newItems;
         // since the copy happens within the range from 0 to size,
@@ -89,18 +87,10 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public void printDeque() {
-        int first = nextIndex(nextFirst);
-        if (isCircular()) {
-            for (int i = first; i < items.length - first; i++) {
-                System.out.println(items[i] + " ");
-            }
-            for (int i = 0; i < nextLast; i++) {
-                System.out.println(items[i] + " ");
-            }
-        } else {
-            for (int i = first; i < nextLast; i++) {
-                System.out.println(items[i] + " ");
-            }
+        int index = nextIndex(nextFirst);
+        for(int i = 0; i < size; i++) {
+            System.out.print(items[index] + " ");
+            index = nextIndex(index);
         }
         System.out.println();
     }
@@ -110,10 +100,11 @@ public class ArrayDeque<T> implements Deque<T> {
         if (size == 0) return null;
         checkEmptySpace();
         // nextIndex(nextFirst) points the first item, nextFirst points the position before the first item.
-        T item = items[nextIndex(nextFirst)];
-        items[nextIndex(nextFirst)] = null;
+        int firstIndex = nextIndex(nextFirst); // cache calculation results
+        T item = items[firstIndex];
+        items[firstIndex] = null;
         // the original position of first item becomes the position for the next addFirst insertion.
-        nextFirst = nextIndex(nextFirst);
+        nextFirst = firstIndex;
         size -= 1;
         return item;
     }
@@ -122,9 +113,10 @@ public class ArrayDeque<T> implements Deque<T> {
     public T removeLast() {
         if (size == 0) return null;
         checkEmptySpace();
-        T item = items[prevIndex(nextLast)];
-        items[prevIndex(nextLast)] = null;
-        nextLast = prevIndex(nextLast);
+        int lastIndex = prevIndex(nextLast);
+        T item = items[lastIndex];
+        items[lastIndex] = null;
+        nextLast = lastIndex;
         size -= 1;
         return item;
     }
@@ -134,6 +126,7 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public T get(int index) {
         if (index < 0 || index >= size) return null;
-        return items[(nextFirst + 1 + index) % items.length];
+        int actualIndex = (nextFirst + 1 + index) % items.length;
+        return items[actualIndex];
     }
 }
