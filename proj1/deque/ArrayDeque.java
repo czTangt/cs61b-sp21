@@ -11,7 +11,7 @@ public class ArrayDeque<T> implements Deque<T> {
     // nextLast points to the position after the last item.
     private int nextLast;
 
-    ArrayDeque() {
+    public ArrayDeque() {
         items = createArray(INIT_CAPACITY);
         size = 0;
         nextFirst = INIT_CAPACITY - 1;
@@ -45,6 +45,7 @@ public class ArrayDeque<T> implements Deque<T> {
     private T[] createArray(int capacity) {
         return (T[]) new Object[capacity];
     }
+
     private void resize(int newCapacity) {
         T[] newItems = createArray(newCapacity);
         int first = nextIndex(nextFirst);
