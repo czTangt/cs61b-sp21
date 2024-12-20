@@ -103,7 +103,9 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public T removeFirst() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
         // nextIndex(nextFirst) points the first item
         // nextFirst points the position before the first item.
         int firstIndex = nextIndex(nextFirst); // cache calculation results
