@@ -53,7 +53,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         T[] newItems = createArray(newCapacity);
         int first = nextIndex(nextFirst);
         // if it not is a circular
-        if (first <= nextLast) {
+        if (first <= prevIndex(nextLast)) {
             System.arraycopy(items, first, newItems, 0, size);
         } else {
             int firstPart = items.length - first;
