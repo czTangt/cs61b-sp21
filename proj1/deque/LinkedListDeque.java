@@ -1,9 +1,8 @@
 package deque;
 
 import java.util.Iterator;
-import java.util.Objects;
 
-public class LinkedListDeque<T> implements Deque<T> {
+public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     // define the basic struct
     private class Node {
         T item;
@@ -102,11 +101,39 @@ public class LinkedListDeque<T> implements Deque<T> {
         return recursiveHelper(p.next, index - 1);
     }
 
+    @Override
     public Iterator<T> iterator() {
-        return null;
+        return new DLLListIterator();
     }
 
-    public boolean equals(Objects o) {
-        return false;
+    private class DLLListIterator implements Iterator<T> {
+        private Node current;
+        private DLLListIterator() {
+            current = sentinel.next;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != sentinel;
+        }
+
+        @Override
+        public T next() {
+            T returnItem = current.item;
+            current = current.next;
+            return returnItem;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Deque<?>)) return false;
+        Deque<?> deque = (Deque<?>) o;
+        if(size != deque.size()) return false;
+        for(int i = 0; i < size; i++) {
+            if(!get(i).equals(deque.get(i))) return false;
+        }
+        return true;
     }
 }

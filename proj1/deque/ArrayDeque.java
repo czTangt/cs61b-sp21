@@ -1,9 +1,12 @@
 package deque;
 
-public class ArrayDeque<T> implements Deque<T> {
+import java.util.Iterator;
+
+public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     // define the basic struct
     private T[] items;
-    private int size;
+    private int size; // the number of items in the array
+    // items.length -> the size of the position in the array, and it is the capacity
     private final int INIT_CAPACITY = 8; // init size
     private final int MAX_CAPACITY = 16; // max size
     // nextFirst points to the position before the first item.
@@ -129,5 +132,41 @@ public class ArrayDeque<T> implements Deque<T> {
         if (index < 0 || index >= size) return null;
         int actualIndex = (nextFirst + 1 + index) % items.length;
         return items[actualIndex];
+    }
+
+    @Override
+    public Iterator<T> iterator(){
+        return new ArrayDequeIterator();
+    }
+
+    private class ArrayDequeIterator implements Iterator<T> {
+        private int index;
+        private ArrayDequeIterator() {
+            index = nextIndex(nextFirst);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index != nextLast;
+        }
+
+        @Override
+        public T next() {
+            T returnItem = items[index];
+            index = nextIndex(index);
+            return returnItem;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Deque<?>)) return false;
+        Deque<?> deque = (Deque<?>) o;
+        if(size != deque.size()) return false;
+        for (int i = 0; i < size; i++) {
+            if(!get(i).equals(deque.get(i))) return false;
+        }
+        return true;
     }
 }
