@@ -61,17 +61,21 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public T removeFirst() {
-       if (size == 0) return null;
-       T value = sentinel.next.item;
-       sentinel.next.next.prev = sentinel;
-       sentinel.next = sentinel.next.next;
-       size -= 1;
-       return value;
+        if (size == 0) {
+            return null;
+        }
+        T value = sentinel.next.item;
+        sentinel.next.next.prev = sentinel;
+        sentinel.next = sentinel.next.next;
+        size -= 1;
+        return value;
     }
 
     @Override
     public T removeLast() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
         T value = sentinel.prev.item;
         sentinel.prev.prev.next = sentinel;
         sentinel.prev = sentinel.prev.prev;
@@ -82,7 +86,9 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     // get the item at the given index
     @Override
     public T get(int index) {
-        if (index < 0 || index >= size) return null;
+        if (index < 0 || index >= size) {
+            return null;
+        }
         Node p = sentinel.next;
         for (int i = 0; i < index; i++) {
             p = p.next;
@@ -92,12 +98,16 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     // same as get, but uses recursion
     public T getRecursive(int index) {
-        if (index < 0 || index >= size) return null;
+        if (index < 0 || index >= size) {
+            return null;
+        }
         return recursiveHelper(sentinel.next, index);
     }
 
     private T recursiveHelper(Node p, int index) {
-        if (index == 0 ) return p.item;
+        if (index == 0) {
+            return p.item;
+        }
         return recursiveHelper(p.next, index - 1);
     }
 
@@ -108,6 +118,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     private class DLLListIterator implements Iterator<T> {
         private Node current;
+
         private DLLListIterator() {
             current = sentinel.next;
         }
@@ -127,12 +138,20 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof Deque<?>)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Deque<?>)) {
+            return false;
+        }
         Deque<?> deque = (Deque<?>) o;
-        if(size != deque.size()) return false;
-        for(int i = 0; i < size; i++) {
-            if(!get(i).equals(deque.get(i))) return false;
+        if (size != deque.size()) {
+            return false;
+        }
+        for (int i = 0; i < size; i++) {
+            if (!get(i).equals(deque.get(i))) {
+                return false;
+            }
         }
         return true;
     }

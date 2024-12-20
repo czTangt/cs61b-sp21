@@ -4,7 +4,8 @@ import org.junit.Test;
 
 import java.util.Comparator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 public class MaxArrayDequeTest {
     private class IntegerComparator implements Comparator<Integer> {
         @Override
@@ -29,7 +30,7 @@ public class MaxArrayDequeTest {
         mad.addFirst(5);
         mad.addFirst(6);
         mad.addFirst(3);
-        assertEquals(6,(int) mad.max());
-        assertEquals(1,(int) mad.max(new ReverseComparator()));
+        assertEquals(6, (int) mad.max());
+        assertEquals(1, (int) mad.max(new ReverseComparator()));
     }
 }

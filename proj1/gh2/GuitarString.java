@@ -36,9 +36,6 @@ public class GuitarString {
      * the Karplus-Strong algorithm.
      */
     public void tic() {
-        // TODO: Dequeue the front sample and enqueue a new sample that is
-        //       the average of the two multiplied by the DECAY factor.
-        //       **Do not call StdAudio.play().**
         Double first = buffer.removeFirst();
         Double second = buffer.get(0);
         Double newSample = (first + second) / 2 * DECAY;
@@ -47,8 +44,6 @@ public class GuitarString {
 
     /* Return the double at the front of the buffer. */
     public double sample() {
-        // TODO: Return the correct thing.
         return buffer.get(0);
     }
 }
-    // TODO: Remove all comments that say TODO when you're done.

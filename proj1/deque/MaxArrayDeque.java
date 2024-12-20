@@ -9,20 +9,20 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
         originalComparator = comparator;
     }
 
-    public T max(){
+    public T max() {
         int maxIndex = 0;
         for (int i = 0; i < this.size(); i++) {
-            if(originalComparator.compare(this.get(i), this.get(maxIndex)) > 0){
+            if (originalComparator.compare(this.get(i), this.get(maxIndex)) > 0) {
                 maxIndex = i;
             }
         }
         return this.get(maxIndex);
     }
 
-    public T max(Comparator<T> comparator){
+    public T max(Comparator<T> comparator) {
         int maxIndex = 0;
         for (int i = 0; i < this.size(); i++) {
-            if(comparator.compare(this.get(i), this.get(maxIndex)) > 0){
+            if (comparator.compare(this.get(i), this.get(maxIndex)) > 0) {
                 maxIndex = i;
             }
         }
